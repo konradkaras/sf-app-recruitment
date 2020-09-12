@@ -1,7 +1,7 @@
-public with sharing class SurveyEditorController {
+global without sharing class SurveyEditorController {
 
     @AuraEnabled
-    public static SurveyService.SurveyWrapper getSurvey(String surveyId){
+    global static SurveyService.SurveyWrapper getSurvey(String surveyId){
         try{
             SurveyService.SurveyWrapper response = SurveyService.getSurvey(surveyId);
             return response;
@@ -11,7 +11,7 @@ public with sharing class SurveyEditorController {
     }
 
     @AuraEnabled 
-    public static SurveyService.QuestionWrapper addNewQuestion(String surveyId) {
+    global static SurveyService.QuestionWrapper addNewQuestion(String surveyId) {
         try{
             SurveyService.QuestionWrapper response = SurveyService.addNewQuestion(surveyId);
             return response;
@@ -21,7 +21,7 @@ public with sharing class SurveyEditorController {
     }
 
     @AuraEnabled 
-    public static void deleteQuestion(String questionId) {
+    global static void deleteQuestion(String questionId) {
         try{
             SurveyService.deleteQuestion(questionId);
         } catch(Exception e){
@@ -30,7 +30,7 @@ public with sharing class SurveyEditorController {
     }
 
     @AuraEnabled 
-    public static void updateQuestion(String questionId, String questionText, String questionType) {
+    global static void updateQuestion(String questionId, String questionText, String questionType) {
         try{
             SurveyService.updateQuestion(questionId, questionText, questionType);
         } catch(Exception e){
@@ -39,7 +39,7 @@ public with sharing class SurveyEditorController {
     }
 
     @AuraEnabled 
-    public static void updateQuestionChoice(String choiceId, String value) {
+    global static void updateQuestionChoice(String choiceId, String value) {
         try{
             SurveyService.updateQuestionChoice(choiceId, value);
         } catch(Exception e){
@@ -48,7 +48,7 @@ public with sharing class SurveyEditorController {
     }
 
     @AuraEnabled 
-    public static void deleteQuestionChoice(String choiceId) {
+    global static void deleteQuestionChoice(String choiceId) {
         try{
             SurveyService.deleteQuestionChoice(choiceId);
         } catch(Exception e){
@@ -57,10 +57,19 @@ public with sharing class SurveyEditorController {
     }
 
     @AuraEnabled 
-    public static SurveyService.ChoiceWrapper addNewQuestionChoice(String questionId) {
+    global static SurveyService.ChoiceWrapper addNewQuestionChoice(String questionId) {
         try{
             SurveyService.ChoiceWrapper response = SurveyService.addNewQuestionChoice(questionId);
             return response;
+        } catch(Exception e){
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    global static void submitSurveyAsFinal(String surveyId){
+        try{
+            SurveyService.submitSurveyAsFinal(surveyId);
         } catch(Exception e){
             throw new AuraHandledException(e.getMessage());
         }

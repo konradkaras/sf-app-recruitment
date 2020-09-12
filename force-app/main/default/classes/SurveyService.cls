@@ -1,6 +1,6 @@
-public class SurveyService {
+global class SurveyService {
 
-    public static SurveyWrapper getSurvey(String surveyId) {
+    global static SurveyWrapper getSurvey(String surveyId) {
         Survey__c survey = [SELECT Id, Name FROM Survey__c WHERE Id = :surveyId LIMIT 1];
         if(survey != null) {
             SurveyWrapper surveyWrapper = new SurveyWrapper(survey);
@@ -16,7 +16,7 @@ public class SurveyService {
         }
     }
 
-    public static QuestionWrapper addNewQuestion(String surveyId) {
+    global static QuestionWrapper addNewQuestion(String surveyId) {
         Survey_Question__c question = new Survey_Question__c();
         question.Survey__c = surveyId;
         question.Question_Text__c = '';
@@ -35,11 +35,11 @@ public class SurveyService {
         return questionSchema;
     }
 
-    public static void deleteQuestion(String questionId) {
+    global static void deleteQuestion(String questionId) {
         delete new Survey_Question__c(Id = questionId);
     }
 
-    public static void updateQuestion(String questionId, String questionText, String questionType) {
+    global static void updateQuestion(String questionId, String questionText, String questionType) {
         update new Survey_Question__c(
             Id = questionId,
             Question_Text__c = questionText,
@@ -51,14 +51,14 @@ public class SurveyService {
         }
     }
 
-    public static void updateQuestionChoice(String choiceId, String value) {
+    global static void updateQuestionChoice(String choiceId, String value) {
         update new Survey_Question_Choice__c(
             Id = choiceId,
             Value__c = value
         );
     }
 
-    public static ChoiceWrapper addNewQuestionChoice(String questionId) {
+    global static ChoiceWrapper addNewQuestionChoice(String questionId) {
         Survey_Question_Choice__c choice = new Survey_Question_Choice__c();
         choice.Survey_Question__c = questionId;
         choice.Value__c = '';
@@ -67,23 +67,32 @@ public class SurveyService {
         return new ChoiceWrapper(choice);
     }
 
-    public static void deleteQuestionChoice(String choiceId) {
+    global static void deleteQuestionChoice(String choiceId) {
         delete new Survey_Question_Choice__c(Id = choiceId);
     }
 
-    public class SurveyWrapper {
-        @AuraEnabled public String recordId;
-        @AuraEnabled public String name;
-        @AuraEnabled public List<QuestionWrapper> questions;
+    global static void submitSurveyAsFinal(String surveyId) {
+        String finalVersionRecordType = Schema.SObjectType.Survey__c.getRecordTypeInfosByDeveloperName()
+                                            .get('Final_Version').getRecordTypeId();
+        update new Survey__c(
+            Id = surveyId,
+            RecordTypeId = finalVersionRecordType
+        );
+    }
 
-        public SurveyWrapper() {}
+    global class SurveyWrapper {
+        @AuraEnabled global String recordId;
+        @AuraEnabled global String name;
+        @AuraEnabled global List<QuestionWrapper> questions;
 
-        public SurveyWrapper(Survey__c survey) {
+        global SurveyWrapper() {}
+
+        global SurveyWrapper(Survey__c survey) {
             this.recordId = survey.Id;
             this.name = survey.Name;
         }
 
-        public void wrapQuestions(List<Survey_Question__c> questionsList) {
+        global void wrapQuestions(List<Survey_Question__c> questionsList) {
             this.questions = new List<QuestionWrapper>();
             if(questionsList != null && !questionsList.isEmpty()) {
                 for(Survey_Question__c q : questionsList) {
@@ -93,15 +102,15 @@ public class SurveyService {
         }
     }
 
-    public class QuestionWrapper {
-        @AuraEnabled public String recordId;
-        @AuraEnabled public String questionText;
-        @AuraEnabled public String questionType;
-        @AuraEnabled public List<ChoiceWrapper> choices;
+    global class QuestionWrapper {
+        @AuraEnabled global String recordId;
+        @AuraEnabled global String questionText;
+        @AuraEnabled global String questionType;
+        @AuraEnabled global List<ChoiceWrapper> choices;
 
-        public QuestionWrapper() {}
+        global QuestionWrapper() {}
 
-        public QuestionWrapper(Survey_Question__c question) {
+        global QuestionWrapper(Survey_Question__c question) {
             this.recordId = question.Id;
             this.questionText = question.Question_Text__c;
             this.questionType = question.Question_Type__c;
@@ -111,7 +120,7 @@ public class SurveyService {
             }
         }
 
-        public void wrapQuestionChoices(List<Survey_Question_Choice__c> choicesList) {
+        global void wrapQuestionChoices(List<Survey_Question_Choice__c> choicesList) {
             this.choices = new List<ChoiceWrapper>();
             if(choicesList != null && !choicesList.isEmpty()) {
                 for(Survey_Question_Choice__c choice : choicesList) {
@@ -121,13 +130,13 @@ public class SurveyService {
         }
     }
 
-    public class ChoiceWrapper {
-        @AuraEnabled public String recordId;
-        @AuraEnabled public String value;
+    global class ChoiceWrapper {
+        @AuraEnabled global String recordId;
+        @AuraEnabled global String value;
 
-        public ChoiceWrapper() {}
+        global ChoiceWrapper() {}
 
-        public ChoiceWrapper(Survey_Question_Choice__c choice) {
+        global ChoiceWrapper(Survey_Question_Choice__c choice) {
             this.recordId = choice.Id;
             this.value = choice.Value__c;
         }
