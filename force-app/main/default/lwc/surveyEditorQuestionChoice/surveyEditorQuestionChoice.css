@@ -1,0 +1,10 @@
+.choice-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    max-width: 500px;
+}
+
+.choice-container__input {
+    flex: 1;
+}

@@ -1,0 +1,60 @@
+<template>
+    <div class="editor-container slds-box slds-p-around_medium slds-m-around_medium">
+
+        <div class="icon-container slds-p-top_medium">
+            <lightning-icon
+                icon-name="action:delete" 
+                alternative-text="Delete question" 
+                title="Delete question"
+                onclick={handleDeleteQuestion}
+                size="x-small"
+            ></lightning-icon>
+        </div>
+
+        <div class="question-container slds-p-left_medium">
+            <div class="question-container__bar">
+                <lightning-input 
+                    class="question-container__input"
+                    type="text" 
+                    label="Question" 
+                    value={questionRecord.questionText}
+                    onchange={handleInputChange}
+                    placeholder="Enter some question"
+                ></lightning-input>
+                <lightning-combobox 
+                    class="slds-p-left_medium"
+                    name="questionType" 
+                    label="Question type" 
+                    value={questionRecord.questionType}
+                    options={questionTypes} 
+                    onchange={handleTypeChange}
+                ></lightning-combobox>
+            </div>
+
+            <template if:true={choicesAllowed}>
+                <div class="choices-container">
+                    <template for:each={choices} for:item="choice">
+                        <c-survey-editor-question-choice
+                            class="slds-p-top_medium"
+                            key={choice.recordId}
+                            choice-record={choice}
+                            ondeletechoice={handleDeleteChoice}
+                        ></c-survey-editor-question-choice>
+                    </template>
+
+                    <div class="new-choice-button slds-p-top_medium">
+                        <lightning-button 
+                            class=""
+                            label="Add option" 
+                            title="Add option" 
+                            icon-name="action:new" 
+                            onclick={handleAddNewChoice}
+                        >
+                        </lightning-button>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+    </div>
+</template>

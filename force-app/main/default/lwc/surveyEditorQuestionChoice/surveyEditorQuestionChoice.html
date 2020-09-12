@@ -1,0 +1,26 @@
+<template>
+    <div class="choice-container">
+        <lightning-icon 
+            icon-name="utility:choice" 
+            alternative-text="Choice" 
+            title="Choice"
+            size="x-small"
+        ></lightning-icon> 
+        <lightning-input 
+            class="choice-container__input slds-p-left_medium"
+            type="text" 
+            value={choiceRecord.value}
+            variant="label-hidden"
+            placeholder="Option"
+            onchange={handleInputChange}
+        ></lightning-input>
+        <lightning-icon 
+            class="slds-p-left_medium"
+            icon-name="utility:close" 
+            alternative-text="Delete choice" 
+            title="Delete choice"
+            size="x-small"
+            onclick={handleDeleteChoice}
+        ></lightning-icon> 
+    </div>
+</template>

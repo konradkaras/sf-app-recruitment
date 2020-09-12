@@ -1,0 +1,23 @@
+.editor-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.question-container {
+    flex: 1;
+}
+
+.question-container__bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.question-container__input {
+    flex: 1;
+}
+
+.choices-container {
+    display: flex;
+    flex-direction: column;
+}

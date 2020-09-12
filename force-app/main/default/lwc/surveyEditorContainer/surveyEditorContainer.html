@@ -1,0 +1,21 @@
+<template>
+    
+    <template for:each={questions} for:item="question">
+        <c-survey-editor-question
+            key={question.recordId}
+            question-record={question}
+            ondeletequestion={handleDeleteQuestion}
+        ></c-survey-editor-question>
+    </template>
+
+
+    <div class="slds-p-around_medium">
+        <lightning-button 
+            variant="brand" 
+            label="Add question" 
+            title="Add question" 
+            icon-name="action:new"
+            onclick={handleAddNewQuestion}
+        ></lightning-button>
+    </div>
+</template>
