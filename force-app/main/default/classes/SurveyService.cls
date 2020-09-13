@@ -1,106 +1,154 @@
 global class SurveyService {
 
     global static SurveyWrapper getSurvey(String surveyId) {
-        Survey__c survey = [SELECT Id, Name FROM Survey__c WHERE Id = :surveyId LIMIT 1];
-        if(survey != null) {
-            SurveyWrapper surveyWrapper = new SurveyWrapper(survey);
-            List<Survey_Question__c> questions = [SELECT Id, Question_Text__c, Question_Type__c,
-                                                    (SELECT Id, Value__c FROM Survey_Question_Choices__r ORDER BY Name)
-                                                    FROM Survey_Question__c
-                                                    WHERE Survey__c = :surveyId
-                                                    ORDER BY Name];
-            surveyWrapper.wrapQuestions(questions);
-            return surveyWrapper;
-        } else {
-            return null;
+        List<Survey__c> survey = [SELECT Id, Name FROM Survey__c WHERE Id = :surveyId LIMIT 1];
+        if(survey.isEmpty()) {
+            throw new SurveyServiceException(String.format('Survey {0} not found', new List<String>{surveyId}));
         }
+
+        SurveyWrapper surveyWrapper = new SurveyWrapper(survey[0]);
+        List<Survey_Question__c> questions = [SELECT Id, Question_Text__c, Question_Type__c,
+                                                (SELECT Id, Value__c FROM Survey_Question_Choices__r ORDER BY Name)
+                                                FROM Survey_Question__c
+                                                WHERE Survey__c = :surveyId
+                                                ORDER BY Name];
+        surveyWrapper.wrapQuestions(questions);
+        return surveyWrapper;
     }
 
     global static SurveyResponseWrapper getSurveyResponse(String invitationKey) {
-        Survey_Response__c response = [SELECT Survey__c, Response_Submitted__c 
+        List<Survey_Response__c> response = [SELECT Survey__c, Response_Submitted__c 
                                         FROM Survey_Response__c 
                                         WHERE Invitation_Key__c = :invitationKey
                                         LIMIT 1];
-        if(response != null) {
-            return new SurveyResponseWrapper(response);
-        } else {
-            return null;
+        if(response.isEmpty()) {
+            throw new SurveyServiceException('Invitation Key invalid');
         }
+        return new SurveyResponseWrapper(response[0]);
     }
 
     global static QuestionWrapper addNewQuestion(String surveyId) {
-        Survey_Question__c question = new Survey_Question__c();
-        question.Survey__c = surveyId;
-        question.Question_Text__c = '';
-        question.Question_Type__c = 'Choice';
-        insert question;
+        SavePoint sp = Database.setSavepoint();
+        try {
+            Survey_Question__c question = new Survey_Question__c();
+            question.Survey__c = surveyId;
+            question.Question_Text__c = '';
+            question.Question_Type__c = 'Choice';
+            insert question;
 
-        Survey_Question_Choice__c choice = new Survey_Question_Choice__c();
-        choice.Survey_Question__c = question.Id;
-        choice.Value__c = '';
-        insert choice;
+            Survey_Question_Choice__c choice = new Survey_Question_Choice__c();
+            choice.Survey_Question__c = question.Id;
+            choice.Value__c = '';
+            insert choice;
 
-        QuestionWrapper questionSchema = new QuestionWrapper(question);
-        questionSchema.choices = new List<ChoiceWrapper> {new ChoiceWrapper(choice)};
+            QuestionWrapper questionSchema = new QuestionWrapper(question);
+            questionSchema.choices = new List<ChoiceWrapper> {new ChoiceWrapper(choice)};
 
-        return questionSchema;
+            return questionSchema;
+        } catch(Exception e) {
+            Database.rollback(sp);
+            throw new SurveyServiceException('Operation failed. Details: ' + e.getMessage());
+        }
     }
 
     global static void deleteQuestion(String questionId) {
-        delete new Survey_Question__c(Id = questionId);
+        SavePoint sp = Database.setSavepoint();
+        try {
+            delete new Survey_Question__c(Id = questionId);
+        } catch(Exception e) {
+            Database.rollback(sp);
+            throw new SurveyServiceException('Operation failed. Details: ' + e.getMessage());
+        }
     }
 
     global static void updateQuestion(String questionId, String questionText, String questionType) {
-        update new Survey_Question__c(
-            Id = questionId,
-            Question_Text__c = questionText,
-            Question_Type__c = questionType
-        );
+        SavePoint sp = Database.setSavepoint();
+        try {
+            update new Survey_Question__c(
+                Id = questionId,
+                Question_Text__c = questionText,
+                Question_Type__c = questionType
+            );
 
-        if(!questionType.equalsIgnoreCase('Choice')) {
-            delete [SELECT Id FROM Survey_Question_Choice__c WHERE Survey_Question__c = :questionId];
+            if(!questionType.equalsIgnoreCase('Choice')) {
+                delete [SELECT Id FROM Survey_Question_Choice__c WHERE Survey_Question__c = :questionId];
+            }
+        } catch(Exception e) {
+            Database.rollback(sp);
+            throw new SurveyServiceException('Operation failed. Details: ' + e.getMessage());
         }
     }
 
     global static void updateQuestionChoice(String choiceId, String value) {
-        update new Survey_Question_Choice__c(
-            Id = choiceId,
-            Value__c = value
-        );
+        SavePoint sp = Database.setSavepoint();
+        try {
+            update new Survey_Question_Choice__c(
+                Id = choiceId,
+                Value__c = value
+            );
+        } catch(Exception e) {
+            Database.rollback(sp);
+            throw new SurveyServiceException('Operation failed. Details: ' + e.getMessage());
+        }
     }
 
     global static ChoiceWrapper addNewQuestionChoice(String questionId) {
-        Survey_Question_Choice__c choice = new Survey_Question_Choice__c();
-        choice.Survey_Question__c = questionId;
-        choice.Value__c = '';
-        insert choice;
-
-        return new ChoiceWrapper(choice);
+        SavePoint sp = Database.setSavepoint();
+        try {
+            Survey_Question_Choice__c choice = new Survey_Question_Choice__c();
+            choice.Survey_Question__c = questionId;
+            choice.Value__c = '';
+            insert choice;
+            return new ChoiceWrapper(choice);
+        } catch(Exception e) {
+            Database.rollback(sp);
+            throw new SurveyServiceException('Operation failed. Details: ' + e.getMessage());
+        }
     }
 
     global static void deleteQuestionChoice(String choiceId) {
-        delete new Survey_Question_Choice__c(Id = choiceId);
+        SavePoint sp = Database.setSavepoint();
+        try {
+            delete new Survey_Question_Choice__c(Id = choiceId);
+        } catch(Exception e) {
+            Database.rollback(sp);
+            throw new SurveyServiceException('Operation failed. Details: ' + e.getMessage());
+        }
     }
 
     global static void submitSurveyAsFinal(String surveyId) {
-        String finalVersionRecordType = Schema.SObjectType.Survey__c.getRecordTypeInfosByDeveloperName()
-                                            .get('Final_Version').getRecordTypeId();
-        update new Survey__c(
-            Id = surveyId,
-            RecordTypeId = finalVersionRecordType
-        );
+        SavePoint sp = Database.setSavepoint();
+        try {
+            String finalVersionRecordType = Schema.SObjectType.Survey__c.getRecordTypeInfosByDeveloperName()
+                                                .get('Final_Version').getRecordTypeId();
+            update new Survey__c(
+                Id = surveyId,
+                RecordTypeId = finalVersionRecordType
+            );
+        } catch(Exception e) {
+            Database.rollback(sp);
+            throw new SurveyServiceException('Operation failed. Details: ' + e.getMessage());
+        }
     }
 
     global static void submitSurveyResponses(String invitationKey, Map<String,String> responsesMap) {
         if(String.isBlank(invitationKey)) { 
-            return; 
+            throw new SurveyServiceException('Invitation Key cannot be blank');
         }
 
-        Survey_Response__c surveyResponse = [SELECT Id 
-                                        FROM Survey_Response__c 
-                                        WHERE Invitation_Key__c = :invitationKey 
-                                        LIMIT 1];
-        if(surveyResponse != null) {
+        List<Survey_Response__c> matchingResponse = [SELECT Id 
+                                                    FROM Survey_Response__c 
+                                                    WHERE Invitation_Key__c = :invitationKey 
+                                                    LIMIT 1];
+        if(matchingResponse.isEmpty()) {
+            throw new SurveyServiceException(
+                String.format('No database entry for Invitation Key {0}', new List<String>{invitationKey})
+            );
+        }
+
+        SavePoint sp = Database.setSavepoint();
+        try {
+            Survey_Response__c surveyResponse = matchingResponse[0];
             surveyResponse.Response_Submitted__c = true;
             update surveyResponse;
             if(responsesMap != null && !responsesMap.isEmpty()) {
@@ -114,6 +162,9 @@ global class SurveyService {
                 }
                 insert questionResponses;
             }
+        } catch(Exception e) {
+            Database.rollback(sp);
+            throw new SurveyServiceException('Operation failed. Details: ' + e.getMessage());
         }
 
     }
@@ -191,4 +242,6 @@ global class SurveyService {
             this.responseSubmitted = response.Response_Submitted__c;
         }
     }
+
+    global class SurveyServiceException extends Exception {}
 }

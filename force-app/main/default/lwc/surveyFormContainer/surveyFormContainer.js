@@ -5,20 +5,30 @@ import getSurveyResponse from '@salesforce/apex/SurveyFormController.getSurveyRe
 import submitSurvey from '@salesforce/apex/SurveyFormController.submitSurvey';
 
 import surveyFormTemplate from './surveyFormContainer.html';
+import surveyNotFoundTemplate from './surveyNotFound.html';
 import surveySubmittedTemplate from './surveySubmitted.html';
 
 export default class SurveyFormContainer extends LightningElement {
     @api recordId;
     @api invitationKey;
     @api formDisabled = false;
+
+    @track surveyNotFound = false;
     @track alreadySubmitted = false;
     @track surveyName;
     @track questions = [];
 
+    formLoaded = false;
     responseValueMap = new Map();
 
+    get formReady() {
+        return this.formLoaded && !this.formDisabled;
+    }
+
     render() {
-        return this.alreadySubmitted
+        return this.surveyNotFound
+            ? surveyNotFoundTemplate
+            : this.alreadySubmitted
             ? surveySubmittedTemplate
             : surveyFormTemplate;
     }
@@ -35,6 +45,10 @@ export default class SurveyFormContainer extends LightningElement {
             }).then(survey => {
                 this.surveyName = survey.name;
                 this.questions = survey.questions;
+                this.formLoaded = true;
+            }).catch(exception => {
+                console.error(exception);
+                this.surveyNotFound = true;
             });
         }
     }
@@ -46,7 +60,10 @@ export default class SurveyFormContainer extends LightningElement {
             }).then(response => {
                 this.recordId = response.surveyId;
                 this.alreadySubmitted = response.responseSubmitted;
-            })
+            }).catch(exception => {
+                console.error(exception);
+                this.surveyNotFound = true;
+            });
         }
     }
 
@@ -62,6 +79,8 @@ export default class SurveyFormContainer extends LightningElement {
             responses: JSON.stringify(responses)
         }).then(() => {
             this.alreadySubmitted = true;
-        })
+        }).catch(exception => {
+            console.error(exception);
+        });
     }
 }

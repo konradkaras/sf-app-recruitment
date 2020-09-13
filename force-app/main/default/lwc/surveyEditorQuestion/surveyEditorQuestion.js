@@ -67,6 +67,8 @@ export default class SurveyEditorQuestion extends LightningElement {
             questionId: this.recordId
         }).then(result => {
             this.choices = [...this.choices, result];
+        }).catch(exception => {
+            console.error(exception);
         });
     }
 

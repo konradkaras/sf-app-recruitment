@@ -17,6 +17,8 @@ export default class SurveyEditorContainer extends LightningElement {
             surveyId: this.recordId
         }).then(survey => {
             this.questions = survey.questions;
+        }).catch(exception => {
+            console.error(exception);
         });
     }
 
@@ -25,6 +27,8 @@ export default class SurveyEditorContainer extends LightningElement {
             surveyId: this.recordId
         }).then(result => {
             this.questions = [...this.questions, result];
+        }).catch(exception => {
+            console.error(exception);
         });
     }
 
