@@ -1,0 +1,5 @@
+<messaging:emailTemplate subject="Survey Invitation" recipientType="Contact" relatedToType="Survey_Response__c">
+<messaging:plainTextEmailBody >
+    <c:SurveyInvitationLinkCmp invitationKey="{!relatedTo.Invitation_Key__c}" />
+</messaging:plainTextEmailBody>
+</messaging:emailTemplate>
