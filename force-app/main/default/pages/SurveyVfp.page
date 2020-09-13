@@ -1,0 +1,14 @@
+<apex:page showHeader="false" sidebar="false">
+    <apex:includeLightning />
+    <div id="surveyCmp" />
+    <script>
+        $Lightning.use("c:SurveyLightningApp", function () {
+            $Lightning.createComponent("c:surveyFormContainer",
+                { invitationKey: "{!$CurrentPage.parameters.survey}" },
+                "surveyCmp",
+                function (cmp) {
+                }
+            );
+        });
+    </script>
+</apex:page>

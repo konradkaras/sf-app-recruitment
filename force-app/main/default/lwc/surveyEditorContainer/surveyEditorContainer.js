@@ -2,6 +2,7 @@ import { LightningElement, api, track } from 'lwc';
 import getSurvey from '@salesforce/apex/SurveyEditorController.getSurvey';
 import addNewQuestion from '@salesforce/apex/SurveyEditorController.addNewQuestion';
 import deleteQuestion from '@salesforce/apex/SurveyEditorController.deleteQuestion';
+import submitSurveyAsFinal from '@salesforce/apex/SurveyEditorController.submitSurveyAsFinal';
 
 export default class SurveyEditorContainer extends LightningElement {
     @api recordId;
@@ -38,6 +39,16 @@ export default class SurveyEditorContainer extends LightningElement {
         }).catch(exception => {
             console.error(exception);
             this.questions = rollback;
+        });
+    }
+
+    handleSubmitAsFinal() {
+        submitSurveyAsFinal({
+            surveyId: this.recordId
+        }).then(() => {
+            window.location.reload();
+        }).catch(exception => {
+            console.error(exception);
         });
     }
 }

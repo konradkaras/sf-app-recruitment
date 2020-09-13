@@ -2,7 +2,7 @@
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>49.0</apiVersion>
     <isExposed>true</isExposed>
-    <masterLabel>Survey Editor</masterLabel>
+    <masterLabel>Survey Form</masterLabel>
     <targets>
         <target>lightning__AppPage</target>
         <target>lightning__RecordPage</target>
@@ -10,6 +10,7 @@
     <targetConfigs>
         <targetConfig targets="lightning__AppPage, lightning__RecordPage">
             <property name="recordId" type="String" label="Record ID" description="Salesforce ID of a Survey." />
+            <property name="formDisabled" type="Boolean" label="Disabled" description="Display Survey as read only." />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

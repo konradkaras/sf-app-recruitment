@@ -1,0 +1,45 @@
+<template>
+
+    <div class="slds-p-top_large">
+        <div class="slds-text-heading_small">
+            {questionText}
+        </div>
+
+        <template if:false={choicesAllowed}>
+            <template if:true={isNumber}>
+                <lightning-input 
+                    type="number" 
+                    label="Response" 
+                    value={responseValue}
+                    placeholder="Enter a number"
+                    disabled={disabled}
+                    onchange={handleResponseInput}
+                ></lightning-input>
+            </template>
+            <template if:false={isNumber}>
+                <lightning-input 
+                    type="text" 
+                    label="Response" 
+                    value={responseValue}
+                    placeholder="Enter your response"
+                    disabled={disabled}
+                    onchange={handleResponseInput}
+                ></lightning-input>
+            </template>
+
+        </template>
+
+        <template if:true={choicesAllowed}>
+                <div class="choices-container">
+                    <lightning-radio-group 
+                        label="Select option"
+                        options={options}
+                        value={responseValue}
+                        type="radio"
+                        disabled={disabled}
+                        onchange={handleResponseInput}
+                    ></lightning-radio-group>
+                </div>
+            </template>
+    </div>
+</template>

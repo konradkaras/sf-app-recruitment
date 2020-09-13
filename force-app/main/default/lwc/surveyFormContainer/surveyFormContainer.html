@@ -1,0 +1,33 @@
+<template>
+    <div class="survey-form">
+        <div class="form-container slds-m-top_large">
+
+            <div class="slds-text-heading_large">
+                {surveyName}
+            </div>
+
+            <div class="slds-p-top_medium">
+                <template for:each={questions} for:item="question">
+                    <c-survey-form-question 
+                        key={question.recordId} 
+                        question-record={question}
+                        disabled={formDisabled}
+                        onvaluechange={handleValueChange}
+                    ></c-survey-form-question>
+                </template>
+            </div>
+
+            <div class="form-footer slds-m-around_large">
+                <template if:false={formDisabled}>
+                    <lightning-button 
+                        variant="brand" 
+                        label="Submit form" 
+                        title="Submit form" 
+                        icon-name="utility:check"
+                        onclick={handleSubmit}
+                    ></lightning-button>
+                </template>
+            </div>
+        </div>
+    </div>
+</template>

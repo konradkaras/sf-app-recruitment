@@ -1,0 +1,14 @@
+.survey-form {
+    display: flex;
+    justify-content: center;
+}
+
+.form-container {
+    flex: 1;
+    max-width: 500px;
+}
+
+.form-footer {
+    display: flex;
+    justify-content: center;
+}
