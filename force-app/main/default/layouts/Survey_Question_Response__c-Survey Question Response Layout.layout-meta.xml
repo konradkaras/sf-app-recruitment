@@ -11,16 +11,16 @@
                 <field>Name</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Question_Text__c</field>
-            </layoutItems>
-            <layoutItems>
                 <behavior>Required</behavior>
-                <field>Survey__c</field>
+                <field>Survey_Response__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Question_Type__c</field>
+                <field>Value__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Survey_Question__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns/>
@@ -54,10 +54,6 @@
         <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
-    <relatedLists>
-        <fields>NAME</fields>
-        <relatedList>Survey_Question_Choice__c.Survey_Question__c</relatedList>
-    </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>
     <showInteractionLogPanel>false</showInteractionLogPanel>

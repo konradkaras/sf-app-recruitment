@@ -160,7 +160,11 @@
         <type>Text</type>
     </nameField>
     <pluralLabel>Surveys</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <searchResultsAdditionalFields>RECORDTYPE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>LAST_UPDATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>UPDATEDBY_USER</searchResultsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>
