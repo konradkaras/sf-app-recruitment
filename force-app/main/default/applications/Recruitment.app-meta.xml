@@ -3,7 +3,7 @@
     <actionOverrides>
         <actionName>View</actionName>
         <comment>Action override updated by Lightning App Builder during activation.</comment>
-        <content>Survey_Record_Page</content>
+        <content>Survey_Draft_Page</content>
         <formFactor>Large</formFactor>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
         <type>Flexipage</type>
@@ -13,6 +13,7 @@
         <headerColor>#0070D2</headerColor>
         <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
     </brand>
+    <description>Recruitment App allows you to create customizable Surveys and send them to the Contact records.</description>
     <formFactors>Large</formFactors>
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
@@ -20,7 +21,7 @@
     <navType>Standard</navType>
     <profileActionOverrides>
         <actionName>View</actionName>
-        <content>Survey_Draft_Page</content>
+        <content>Survey_Final_Page</content>
         <formFactor>Large</formFactor>
         <pageOrSobjectType>Survey__c</pageOrSobjectType>
         <recordType>Survey__c.Final_Version</recordType>
@@ -29,15 +30,23 @@
     </profileActionOverrides>
     <profileActionOverrides>
         <actionName>View</actionName>
-        <content>Survey_Record_Page</content>
+        <content>Survey_Draft_Page</content>
         <formFactor>Large</formFactor>
         <pageOrSobjectType>Survey__c</pageOrSobjectType>
         <recordType>Survey__c.Draft_Version</recordType>
         <type>Flexipage</type>
         <profile>Admin</profile>
     </profileActionOverrides>
-    <tabs>standard-Contact</tabs>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Survey_Draft_Page</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Survey__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Admin</profile>
+    </profileActionOverrides>
     <tabs>Survey__c</tabs>
+    <tabs>standard-Contact</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Recruitment_UtilityBar</utilityBar>
 </CustomApplication>
