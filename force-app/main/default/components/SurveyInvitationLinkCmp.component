@@ -1,4 +1,5 @@
 <apex:component controller="SurveyInvitationTemplateCtrl" access="global">
     <apex:attribute name="invitationKey" type="String" description="Survey Invitation Key" assignTo="{!invitationHash}" />
-    Link: {!InvitationLink}
+    You are invited to participate in a survey. Click the link below:
+    {!InvitationLink}
 </apex:component>
