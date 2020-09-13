@@ -21,7 +21,7 @@ global class SurveyService {
                                         FROM Survey_Response__c 
                                         WHERE Invitation_Key__c = :invitationKey
                                         LIMIT 1];
-        if(response.isEmpty()) {
+        if(String.isBlank(invitationKey) || response.isEmpty()) {
             throw new SurveyServiceException('Invitation Key invalid');
         }
         return new SurveyResponseWrapper(response[0]);
