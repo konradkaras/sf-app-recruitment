@@ -16,6 +16,18 @@ global class SurveyService {
         }
     }
 
+    global static SurveyResponseWrapper getSurveyResponse(String invitationKey) {
+        Survey_Response__c response = [SELECT Survey__c, Response_Submitted__c 
+                                        FROM Survey_Response__c 
+                                        WHERE Invitation_Key__c = :invitationKey
+                                        LIMIT 1];
+        if(response != null) {
+            return new SurveyResponseWrapper(response);
+        } else {
+            return null;
+        }
+    }
+
     global static QuestionWrapper addNewQuestion(String surveyId) {
         Survey_Question__c question = new Survey_Question__c();
         question.Survey__c = surveyId;
@@ -80,6 +92,33 @@ global class SurveyService {
         );
     }
 
+    global static void submitSurveyResponses(String invitationKey, Map<String,String> responsesMap) {
+        if(String.isBlank(invitationKey)) { 
+            return; 
+        }
+
+        Survey_Response__c surveyResponse = [SELECT Id 
+                                        FROM Survey_Response__c 
+                                        WHERE Invitation_Key__c = :invitationKey 
+                                        LIMIT 1];
+        if(surveyResponse != null) {
+            surveyResponse.Response_Submitted__c = true;
+            update surveyResponse;
+            if(responsesMap != null && !responsesMap.isEmpty()) {
+                List<Survey_Question_Response__c> questionResponses = new List<Survey_Question_Response__c>();
+                for(String questionId : responsesMap.keySet()) {
+                    questionResponses.add(new Survey_Question_Response__c(
+                        Survey_Response__c = surveyResponse.Id,
+                        Survey_Question__c = questionId,
+                        Value__c = responsesMap.get(questionId)
+                    ));
+                }
+                insert questionResponses;
+            }
+        }
+
+    }
+
     global class SurveyWrapper {
         @AuraEnabled global String recordId;
         @AuraEnabled global String name;
@@ -139,6 +178,18 @@ global class SurveyService {
         global ChoiceWrapper(Survey_Question_Choice__c choice) {
             this.recordId = choice.Id;
             this.value = choice.Value__c;
+        }
+    }
+
+    global class SurveyResponseWrapper {
+        @AuraEnabled global String surveyId;
+        @AuraEnabled global Boolean responseSubmitted;
+
+        global SurveyResponseWrapper() {}
+
+        global SurveyResponseWrapper(Survey_Response__c response) {
+            this.surveyId = response.Survey__c;
+            this.responseSubmitted = response.Response_Submitted__c;
         }
     }
 }
