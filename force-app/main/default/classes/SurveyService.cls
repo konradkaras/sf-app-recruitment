@@ -43,7 +43,6 @@ global class SurveyService {
         QuestionWrapper questionSchema = new QuestionWrapper(question);
         questionSchema.choices = new List<ChoiceWrapper> {new ChoiceWrapper(choice)};
 
-        System.debug(JSON.serialize(questionSchema));
         return questionSchema;
     }
 

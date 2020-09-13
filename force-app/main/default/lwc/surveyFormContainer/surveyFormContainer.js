@@ -33,7 +33,6 @@ export default class SurveyFormContainer extends LightningElement {
             getSurvey({
                 surveyId: this.recordId
             }).then(survey => {
-                console.log(survey);
                 this.surveyName = survey.name;
                 this.questions = survey.questions;
             });
@@ -45,7 +44,6 @@ export default class SurveyFormContainer extends LightningElement {
             await getSurveyResponse({
                 invitationKey: this.invitationKey
             }).then(response => {
-                console.log(response);
                 this.recordId = response.surveyId;
                 this.alreadySubmitted = response.responseSubmitted;
             })
@@ -54,13 +52,11 @@ export default class SurveyFormContainer extends LightningElement {
 
     handleValueChange(event) {
         const response = event.detail;
-        console.log('response: ', response);
         this.responseValueMap.set(response.questionId, response.value);
     }
 
     handleSubmit() {
         const responses = Object.fromEntries(this.responseValueMap);
-        console.log(JSON.stringify(responses));
         submitSurvey({
             invitationKey: this.invitationKey,
             responses: JSON.stringify(responses)
