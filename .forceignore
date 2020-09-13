@@ -99,6 +99,7 @@ force-app/main/default/networkBranding/cbCustomer_Community.networkBranding
 force-app/main/default/networkBranding/cbCustomer_Community.networkBranding-meta.xml
 force-app/main/default/networks/Customer Community.network-meta.xml
 force-app/main/default/objects/Contact/fields/*
+force-app/main/default/profiles/*
 force-app/main/default/pages/AnswersHome.page
 force-app/main/default/pages/AnswersHome.page-meta.xml
 force-app/main/default/pages/BandwidthExceeded.page
