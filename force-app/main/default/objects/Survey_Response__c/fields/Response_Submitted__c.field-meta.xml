@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Response_Submitted__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Checked if recipient submitted his response.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Checked if recipient submitted his response.</inlineHelpText>
+    <label>Response Submitted</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>
